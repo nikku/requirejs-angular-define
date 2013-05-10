@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Jasmine Spec Runner</title>
+
+    <link rel="stylesheet" type="text/css" href="lib/jasmine/jasmine.css">
+
+    <script src="lib/jasmine/jasmine.js"></script>
+    <script src="lib/jasmine/jasmine-html.js"></script>
+
+    <script src="../lib/require/require.js"></script>
+
+    <script>
+      (function() {
+
+        require({
+          baseUrl: '../',
+          paths: {
+            'ngDefine' : 'src/ngDefine',
+            'jquery' : 'lib/jquery/jquery-2.0.0',
+            'angular' : 'lib/angular/angular',
+            'angular-resource' : 'lib/angular/angular-resource',
+            'angular-mocks' : 'test/lib/angular/angular-mocks'
+          },
+          shim: {
+            'angular' : { deps: [ 'jquery' ], exports: 'angular' },
+            'angular-resource': { deps: [ 'angular' ] }, 
+            'angular-mocks': { deps: [ 'angular' ] }, 
+          },
+          packages: [
+            { name: 'test', location: 'test' },
+            { name: 'my-module', location: 'test/my-module' },
+            { name: 'my-other-module', location: 'test/my-other-module' }
+          ]
+        });
+
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var htmlReporter = new jasmine.HtmlReporter();
+
+        jasmineEnv.addReporter(htmlReporter);
+
+        jasmineEnv.specFilter = function(spec) {
+          return htmlReporter.specFilter(spec);
+        };
+
+        var specs = [
+          'test/appSpec'
+        ];
+
+        var testOnly = window.location.hash.substring(1);
+        if (!!testOnly) {
+          specs = [testOnly];
+        }
+
+        require([ 'ngDefine', 'angular', 'angular-mocks', 'angular-resource' ], function(ngDefine) {
+
+          // enable debug for test cases
+          ngDefine.debug = true;
+
+          require(specs, function() {
+            // bootstrap testapp
+            angular.bootstrap(document.body, ['testapp']);
+
+            jasmineEnv.execute();
+          });
+        });
+      })();
+    </script>
+  </head>
+
+  <body>
+
+  </body>
+</html>
