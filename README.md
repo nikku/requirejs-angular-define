@@ -9,15 +9,17 @@ How it Works
 
 Using `ngDefine` you can leverage [RequireJS](http://requirejs.org/) to define [AngularJS](http://angularjs.org/) modules and their dependencies in a declarative way. The modules can then be published as packages and are (re-)usable in RequireJS applications.
 
-    ngDefine('my.module', [
-      './bar',
-      'module:ngResource',
-      'module:my.other.module:my-other-module'
-    ],
-    function(module) {
-      // define the module
-      module.value("foo", "bar");
-    });
+```javascript
+ngDefine('my.module', [
+  './bar',
+  'module:ngResource',
+  'module:my.other.module:my-other-module'
+],
+function(module) {
+  // define the module
+  module.value("foo", "bar");
+});
+```
 
 `ngDefine` is built as a wrapper around `define` and gives you the same guarantees `define` does with respect to dependency loading (ie. fail if a required dependency could not be loaded). 
 At the same time it creates the AngularJS module for you and makes sure that the module dependencies are correctly declared.
@@ -46,58 +48,62 @@ The list of dependencies may define AngularJS dependencies in the form `module:{
 Each AngularJS module dependency may be specified with an optional path to the RequireJS file defining it. 
 Note that if no path is given, the RequireJS path is produced by replacing all `.` with `/`. 
 
-    ngDefine('app', [
-      // require normal requireJS packages
-      'angular',
-      'jquery',
 
-      // require package local files
-      './foo',
+```javascript
+ngDefine('app', [
+  // require normal requireJS packages
+  'angular',
+  'jquery',
 
-      // require angular modules
-      'module:ngResource',
-      'module:my.module.bar:my-module/bar',
-      'module:my.other.module:my-other-module',
+  // require package local files
+  './foo',
 
-      // require without a require js path -> locates the module under foo/baz
-      'module:foo.baz'
-    ],
-    function(module, angular, jquery) {
-      // callback gets passed the defined module as the first parameter, 
-      // all other objects defined by declared dependencies follow at parameter 1..n
+  // require angular modules
+  'module:ngResource',
+  'module:my.module.bar:my-module/bar',
+  'module:my.other.module:my-other-module',
 
-      module // --> { .., name: 'app', .. }
+  // require without a require js path -> locates the module under foo/baz
+  'module:foo.baz'
+],
+function(module, angular, jquery) {
+  // callback gets passed the defined module as the first parameter, 
+  // all other objects defined by declared dependencies follow at parameter 1..n
 
-      // define module now
-      module.value("foo", "bar");
-    });
+  module // --> { .., name: 'app', .. }
 
+  // define module now
+  module.value("foo", "bar");
+});
+```
 
 ### RequireJS Configuration
 
 As of RequireJS version 2.1.x a require configuration using `ngDefine` / AngularJS may look as follows:
 
-    require({
-      paths: {
-        // include ngDefine script in path
-        'ngDefine' : 'lib/ngDefine', 
-        'angular' : 'lib/angular/angular',
-        'angular-resource' : 'lib/angular/angular-resource'
-        'jquery' : 'lib/jquery/jquery-2.0.0',
-      },
-      shim: {
-        'angular' : { deps: [ 'jquery' ], exports: 'angular' },
-        'angular-resource': { deps: [ 'angular' ] }
-      },
-      packages: [
-        // application package
-        { name: 'app', location: 'app', main: 'app.js' },
+```javascript
+require({
+  paths: {
+    // include ngDefine script in path
+    'ngDefine' : 'lib/ngDefine', 
+    'angular' : 'lib/angular/angular',
+    'angular-resource' : 'lib/angular/angular-resource'
+    'jquery' : 'lib/jquery/jquery-2.0.0',
+  },
+  shim: {
+    'angular' : { deps: [ 'jquery' ], exports: 'angular' },
+    'angular-resource': { deps: [ 'angular' ] }
+  },
+  packages: [
+    // application package
+    { name: 'app', location: 'app', main: 'app.js' },
 
-        // other angular modules
-        { name: 'my-module', location: 'lib/my-module' },
-        { name: 'my-other-module', location: 'lib/my-other-module' }
-      ]
-    });
+    // other angular modules
+    { name: 'my-module', location: 'lib/my-module' },
+    { name: 'my-other-module', location: 'lib/my-other-module' }
+  ]
+});
+```
 
 Note that [jQuery](http://jquery.com/) is an optional dependency and may be excluded from both the path as well as the angular shim configuration. 
 
@@ -109,19 +115,21 @@ That is why bootstrapping must be done in a nested require which makes sure `ngD
 
 After the application main module is ready, it can be bootstrapped using [`angular.bootstrap(name)`](http://docs.angularjs.org/api/angular.bootstrap).
 
-    // require ngDefine and all angular modules you need
-    require([ 'ngDefine', 'angular', 'angular-resource' ], function(ngDefine, angular) {
+```javascript
+// require ngDefine and all angular modules you need
+require([ 'ngDefine', 'angular', 'angular-resource' ], function(ngDefine, angular) {
 
-      // enable debug to get module dependencies logged
-      ngDefine.debug = true;
+  // enable debug to get module dependencies logged
+  ngDefine.debug = true;
 
-      // require the application
-      require('app', function() {
+  // require the application
+  require('app', function() {
 
-        // bootstrap the application
-        angular.bootstrap(document.body, ['app']);
-      });
-    });
+    // bootstrap the application
+    angular.bootstrap(document.body, ['app']);
+  });
+});
+```
 
 
 FAQ
