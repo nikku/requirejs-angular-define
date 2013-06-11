@@ -10,6 +10,7 @@
     <script src="lib/jasmine/jasmine-html.js"></script>
 
     <script src="../lib/require/require.js"></script>
+    <script src="main.js"></script>
 
     <script>
       (function() {
@@ -25,8 +26,8 @@
           },
           shim: {
             'angular' : { deps: [ 'jquery' ], exports: 'angular' },
-            'angular-resource': { deps: [ 'angular' ] }, 
-            'angular-mocks': { deps: [ 'angular' ] }, 
+            'angular-resource': { deps: [ 'angular' ] },
+            'angular-mocks': { deps: [ 'angular' ] },
           },
           packages: [
             { name: 'test', location: 'test' },
@@ -34,7 +35,7 @@
             { name: 'my-other-module', location: 'test/my-other-module' }
           ]
         });
-
+        
         var jasmineEnv = jasmine.getEnv();
         jasmineEnv.updateInterval = 1000;
 
@@ -47,7 +48,8 @@
         };
 
         var specs = [
-          'test/appSpec'
+          'test/appSpec',
+          'test/errorSpec'
         ];
 
         var testOnly = window.location.hash.substring(1);

@@ -40,7 +40,7 @@ We will check out how to employ `ngDefine` to [define AngularJS modules](#Angula
 
 ### AngularJS Module Definition
 
-AngularJS modules may be declared using `#ngDefine(name, dependencies, callback)`. 
+AngularJS modules may be declared using `#ngDefine(name[, dependencies], callback)`. 
 The function accepts the name of the module to be defined or looked up and a callback function that may define or configure the module.
 A (optional) list of arbitrary RequireJS dependencies can be passed that are resolved before the callback function is executed.
 
