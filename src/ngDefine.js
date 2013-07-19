@@ -1,5 +1,7 @@
 /**
- * ngDefine() - a friendly integration of AngularJS into RequireJS powered applications
+ * ngDefine - a friendly integration of AngularJS into RequireJS powered applications
+ *
+ * See https://github.com/Nikku/requirejs-angular-define for details.
  *
  * @version 1.1.0
  * @author Nico Rehwaldt <http://github.com/Nikku>

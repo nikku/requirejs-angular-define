@@ -1,4 +1,17 @@
-/* global process:false, navigator:false, document:false */
+/**
+ * ngr.js - a wrapper to r.js, the RequireJS optimizer that allows it to optimize
+ *          ngDefine powered applications.
+ *
+ * See https://github.com/Nikku/requirejs-angular-define for details.
+ *
+ * @version 1.1.0
+ * @author Nico Rehwaldt <http://github.com/Nikku>
+ *
+ * @license (c) 2013 Nico Rehwaldt, MIT
+ */
+
+
+ /* global process:false, navigator:false, document:false */
 
 (function (console, args) {
 
