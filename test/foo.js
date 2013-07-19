@@ -1,6 +1,6 @@
 ngDefine('testapp', function(module) {
 
-  module.config(function(TestServiceProvider) {
+  module.config([ 'TestServiceProvider', function(TestServiceProvider) {
     TestServiceProvider.moduleInitialized('testapp-foo');
-  });
+  }]);
 });

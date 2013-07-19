@@ -10,6 +10,7 @@
     <script src="lib/jasmine/jasmine-html.js"></script>
 
     <script src="../lib/require/require.js"></script>
+    <script src="../build/optimizedAppSpec.js"></script>
 
     <script>
       (function() {
@@ -17,21 +18,13 @@
         require({
           baseUrl: '../',
           paths: {
-            'ngDefine' : 'src/ngDefine',
-            'jquery' : 'lib/jquery/jquery-2.0.0',
-            'angular' : 'lib/angular/angular',
-            'angular-resource' : 'lib/angular/angular-resource',
             'angular-mocks' : 'test/lib/angular/angular-mocks'
           },
           shim: {
-            'angular' : { deps: [ 'jquery' ], exports: 'angular' },
-            'angular-resource': { deps: [ 'angular' ] },
-            'angular-mocks': { deps: [ 'angular' ] },
+            'angular-mocks': { deps: [ 'angular' ] }
           },
           packages: [
-            { name: 'test', location: 'test' },
-            { name: 'my-module', location: 'test/my-module' },
-            { name: 'my-other-module', location: 'test/my-other-module' }
+            { name: 'test', location: 'test' }
           ]
         });
         
@@ -47,8 +40,7 @@
         };
 
         var specs = [
-          'test/appSpec',
-          'test/errorSpec'
+          'test/appSpec'
         ];
 
         var testOnly = window.location.hash.substring(1);
@@ -56,17 +48,11 @@
           specs = [testOnly];
         }
 
-        require([ 'ngDefine', 'angular', 'angular-mocks', 'angular-resource' ], function(ngDefine) {
+        require(specs, function() {
+          // bootstrap testapp
+          angular.bootstrap(document.body, ['testapp']);
 
-          // enable debug for test cases
-          ngDefine.debug = true;
-
-          require(specs, function() {
-            // bootstrap testapp
-            angular.bootstrap(document.body, ['testapp']);
-
-            jasmineEnv.execute();
-          });
+          jasmineEnv.execute();
         });
       })();
     </script>

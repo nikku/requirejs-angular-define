@@ -1,6 +1,9 @@
 {
   "name": "requirejs-angular-define",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "dependencies" : {
+    "requirejs": "2.1.x"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.1.1",

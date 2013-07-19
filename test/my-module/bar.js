@@ -4,7 +4,7 @@ ngDefine('my.module.bar', [
   'module:test:test/testService'
 ],
 function(module) {
-  module.config(function(TestServiceProvider) {
+  module.config([ 'TestServiceProvider', function(TestServiceProvider) {
     TestServiceProvider.moduleInitialized('my.module.bar');
-  });
+  }]);
 });

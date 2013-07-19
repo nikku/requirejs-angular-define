@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    textarea {
+      width: 100%;
+      height: 20em;
+    }
+  </style>
+  <script src="../../lib/require/r.js/r.js"></script>
+  <script src="../../src/ngr.js"></script>
+  <script>
+    function optimize() {
+      ngr.optimize({
+        baseUrl: '../../../',
+        name : 'test/app',
+        paths: {
+          'ngDefine' : 'src/ngDefine',
+          'jquery' : 'lib/jquery/jquery-2.0.0',
+          'angular' : 'lib/angular/angular',
+          'angular-resource' : 'lib/angular/angular-resource'
+        },
+        optimize: "uglify2", 
+        shim: {
+          'angular' : { deps: [ 'jquery' ], exports: 'angular' },
+          'angular-resource': { deps: [ 'angular' ] },
+          'angular-mocks': { deps: [ 'angular' ] },
+        },
+        logLevel: 0, // TRACE
+        packages: [
+          { name: 'test', location: 'test' },
+          { name: 'my-module', location: 'test/my-module' },
+          { name: 'my-other-module', location: 'test/my-other-module' }
+        ],
+        out: function (text) {
+          document.getElementById('output').value = text;
+        }
+      }, function (buildText) {
+        document.getElementById('buildMessages').value = buildText;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function (evt) {
+      document.getElementById('build').addEventListener('click', function (evt) {
+        optimize();
+      }, false);
+    }, false);
+  </script>
+</head>
+<body>
+  <h1>ngr.js in the browser</h1>
+
+  <p>A test of running ngr.js in the browser.</p>
+
+  <p>
+    <button id="build">Build it</button>
+  </p>
+
+  <h2>Build Messages</h2>
+  <textarea id="buildMessages"></textarea>
+
+  <h2>Output</h2>
+  <textarea id="output"></textarea>
+</body>
+</html>
