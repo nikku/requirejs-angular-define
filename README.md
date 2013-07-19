@@ -150,6 +150,13 @@ This way the modules can be reused and external dependencies can easily be resol
 Not quite, read (1). There is no gap between RequireJS and AngularJS, as both serve different purposes during different stages of the application lifecycle. 
 `ngDefine` allows you to leverage the power of both technologies. 
 
+**(3) Can an application that uses `ngDefine` be minified?**
+
+Yes, minification can be done through `ngr.js`, a wrapper to the [RequireJS](http://requirejs.org/docs/optimization.html) optimizer.
+Refer to [test/ngr/optimize.html](https://github.com/Nikku/requirejs-angular-define/blob/master/test/ngr/optimize.html) for an example how optimization can be configured.
+
+Currently, the optimizer is available for the browser and node environments, only.
+
 
 License
 -------
