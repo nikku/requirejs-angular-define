@@ -1,6 +1,8 @@
 ngDefine
 ========
 
+[![Build Status](https://travis-ci.org/Nikku/requirejs-angular-define.png?branch=master)](https://travis-ci.org/Nikku/requirejs-angular-define)
+
 A friendly integration of [AngularJS](http://angularjs.org/) into [RequireJS](http://requirejs.org/) powered applications.
 
 
