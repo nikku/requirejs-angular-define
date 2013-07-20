@@ -16,7 +16,7 @@ ngDefine('my.module', [
   './bar',
   'module:ngResource',
   'module:my.other.module:my-other-module'
-],
+], 
 function(module) {
   // define the module
   module.value("foo", "bar");
@@ -30,10 +30,10 @@ At the same time it creates the AngularJS module for you and makes sure that the
 Sample Application
 ------------------
 
-Have a look at the test suite (`./test`) for a sample application. 
+Have a look at the [test suite](https://github.com/Nikku/requirejs-angular-define/tree/master/test/unit/testapp) for a sample application. 
 
 
-Building ngDefined applications
+Building ngDefined Applications
 -------------------------------
 
 This will quickly guide you through the neccesary steps to build a application using `ngDefine`. 
@@ -79,6 +79,7 @@ function(module, angular, jquery) {
 });
 ```
 
+
 ### RequireJS Configuration
 
 As of RequireJS version 2.1.x a require configuration using `ngDefine` / AngularJS may look as follows:
@@ -118,11 +119,8 @@ That is why bootstrapping must be done in a nested require which makes sure `ngD
 After the application main module is ready, it can be bootstrapped using [`angular.bootstrap(name)`](http://docs.angularjs.org/api/angular.bootstrap).
 
 ```javascript
-// require ngDefine and all angular modules you need
+// require ngDefine and all angular modules your app requires
 require([ 'ngDefine', 'angular', 'angular-resource' ], function(ngDefine, angular) {
-
-  // enable debug to get module dependencies logged
-  ngDefine.debug = true;
 
   // require the application
   require('app', function() {
@@ -133,6 +131,48 @@ require([ 'ngDefine', 'angular', 'angular-resource' ], function(ngDefine, angula
 });
 ```
 
+
+### Minification in Production Environments
+
+The library provides the script `ngr.js` that can be used to minify modules created using `ngDefine`. 
+`ngr.js` is a wrapper to the [RequireJS](http://requirejs.org/docs/optimization.html) optimizer and works in NodeJS and browser environments. 
+
+To expose the script as the `ngr` task into [grunt](http://gruntjs.com/), use the following code snippet: 
+
+```javascript
+// project configuration
+grunt.initConfig({
+  // ...
+
+  ngr: {
+    minify: {
+      // supports all options r.js understands
+      options: {
+        name : 'testapp/app',
+        out: 'build/testapp/app.min.js'
+
+        // path, shim and package configurations 
+        // ...
+      }
+    }
+  }
+});
+
+// sample task for ngDefine optimization
+grunt.registerMultiTask('ngr', 'Minify ngDefine powered application', function() {
+
+  var done = this.async();
+
+  var ngr = require('path/to/ngr.js');
+
+  ngr.optimize(this.data.options, function() {
+    done('success');
+  }, function(e) {
+    console.log('Error during minify: ', e);
+    done(new Error('With failures: ' + e));
+  });
+});
+```
 
 FAQ
 ---
@@ -155,9 +195,7 @@ Not quite, read (1). There is no gap between RequireJS and AngularJS, as both se
 **(3) Can an application that uses `ngDefine` be minified?**
 
 Yes, minification can be done through `ngr.js`, a wrapper to the [RequireJS](http://requirejs.org/docs/optimization.html) optimizer.
-Refer to [example/optimize.html](https://github.com/Nikku/requirejs-angular-define/blob/master/example/ngr.html) for an example how optimization can be configured.
-
-Currently, the optimizer is available for the browser and node environments, only.
+Refer to the previous section for details.
 
 
 License

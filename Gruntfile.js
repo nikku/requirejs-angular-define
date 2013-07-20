@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           name : 'testapp/app',
           out: 'build/testapp/app.min.js',
           paths: {
-            'ngDefine' : 'src/ngDefine',
+            'ngDefine' : 'build/ngDefine.min',
             'jquery' : 'lib/jquery/jquery-2.0.0',
             'angular' : 'lib/angular/angular',
             'angular-resource' : 'lib/angular/angular-resource'
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
   grunt.registerTask('travis', [ 'default' ]);
 
   // sample task for ngDefine optimization
-  grunt.registerMultiTask( 'ngr', 'Minify ngDefine powered application', function() {
+  grunt.registerMultiTask('ngr', 'Minify ngDefine powered application', function() {
 
     var done = this.async();
 
