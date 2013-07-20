@@ -1,6 +1,20 @@
 {
   "name": "requirejs-angular-define",
+  "author": "Nico Rehwaldt <https://github.com/Nikku>",
+  "description": "A friendly integration of AngularJS into RequireJS powered applications",
   "version": "1.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nikku/requirejs-angular-define.git"
+  },
+  "keywords": [
+    "angularjs",
+    "requirejs",
+    "integration"
+  ],
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
   "dependencies": {
     "requirejs": "2.1.x"
   },
@@ -11,7 +25,5 @@
     "grunt-contrib-requirejs": "~0.4.0",
     "grunt-karma": "~0.5.0"
   },
-  "scripts": {
-    "test": "grunt travis --verbose"
-  }
+  "license": "MIT"
 }
