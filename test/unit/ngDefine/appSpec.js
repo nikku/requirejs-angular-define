@@ -1,4 +1,4 @@
-define([ 'test/app', 'my-module/service', 'angular-mocks' ], function(app, service) {
+define([ 'testapp/app', 'my-module/service', 'angular-mocks' ], function(app, service) {
 
   return describe('ngDefine()', function() {
 

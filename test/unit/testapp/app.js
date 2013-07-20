@@ -5,8 +5,8 @@ ngDefine('testapp', [
   'module:ngResource',
   'module:my.module.bar:my-module/bar',
   'module:my.other.module:my-other-module',
-  'module:test:test/testService',
-  'module:test.baz',
+  'module:test:testapp/testService',
+  'module:testapp.baz',
   'angular-resource'
 ], function(module, angular, jquery) {
 

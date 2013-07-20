@@ -1,7 +1,7 @@
 ngDefine('my.module.bar', [
   "./foobar",
   "./asdf",
-  'module:test:test/testService'
+  'module:test:testapp/testService'
 ],
 function(module) {
   module.config([ 'TestServiceProvider', function(TestServiceProvider) {

@@ -1,5 +1,5 @@
-ngDefine('test.baz', [
-  'module:test:test/testService'
+ngDefine('testapp.baz', [
+  'module:test:testapp/testService'
 ],
 function(module) {
   module.config([ 'TestServiceProvider', function(TestServiceProvider) {

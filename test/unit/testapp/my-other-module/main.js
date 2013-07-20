@@ -1,5 +1,5 @@
 ngDefine('my.other.module', [
-  'module:test:test/testService'
+  'module:test:testapp/testService'
 ],
 function(module) {
   module.config([ 'TestServiceProvider', function(TestServiceProvider) {
