@@ -58,13 +58,13 @@ module.exports = function(grunt) {
       unit: {
         configFile: 'config/karma.unit.js',
       },
-      singleOptimized: {
-        configFile: 'config/karma.unit.optimized.js',
+      single: {
+        configFile: 'config/karma.unit.js',
         singleRun: true,
         browsers: [ 'PhantomJS' ]
       },
-      single: {
-        configFile: 'config/karma.unit.js',
+      singleOptimized: {
+        configFile: 'config/karma.unit.optimized.js',
         singleRun: true,
         browsers: [ 'PhantomJS' ]
       },
@@ -81,6 +81,9 @@ module.exports = function(grunt) {
 
   // default task: minify sources and publish to ./build
   grunt.registerTask( 'default', [ 'test' ]);
+
+  // travis task
+  grunt.registerTask('travis', [ 'default' ]);
 
   // sample task for ngDefine optimization
   grunt.registerMultiTask( 'ngr', 'Minify ngDefine powered application', function() {
