@@ -1,10 +1,15 @@
-# 1.1
+# 1.1.0
 
 - update module load error messages
 - add ability to minify ngDefine scripts using ngr.js
 
   ngr.js works as a wrapper around r.js (the requirejs optimizer).
-  It expands scripts that contain ngDefine to plain RequireJS / angular modules.
+  It expands scripts that contain ngDefine to plain RequireJS / AngularJS modules.
+
+
+- use grunt as build tool  
+- run tests automated via karma
+
 
 # 1.0.0
 
