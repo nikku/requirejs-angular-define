@@ -18,12 +18,14 @@
   var libraryLoaded;
 
   var env;
+
   var requirejs;
+  var esprima;
 
   var ngr = {};
 
   if (typeof process !== 'undefined' && process.versions && !!process.versions.node) {
-    requirejs = require('requirejs');
+    requirejs = require('requirejs');    
     env = 'node';
   } else if (typeof navigator !== 'undefined' && typeof document !== 'undefined') {
     requirejs = window.requirejs;
@@ -33,14 +35,12 @@
   function loadLib(completeFn) {
 
     /** provides the ngr library */
-    function internalLoad(require) {
-
-      var esprima = require('esprima');
+    function internalLoad(req) {
       
-      var argPropName = 'arguments';
+      var esprima = req('esprima');
 
-      /** relevant parts from ngDefine */
-      (function() {
+      var ngParse = (function() {
+
         var MODULE_DEPENDENCY = /^module:([^:]*)(:(.*))?$/;
         var INTERNAL = /^ng/;
 
@@ -86,7 +86,7 @@
           return obj;
         }
 
-        ngr.parseNgModule = function(name, dependencies) {
+        function parseNgModule(name, dependencies) {
 
           var files = [], 
               modules = [];
@@ -115,8 +115,12 @@
           });
 
           return { name: name, fileDependencies: files, moduleDependencies: modules };
-        };
+        }
+
+        return { parseNgModule: parseNgModule };
       })();
+      
+      var argPropName = 'arguments';
 
       // from an esprima example for traversing its ast.
       function traverse(object, visitor) {
@@ -360,7 +364,7 @@
           // register module in url -> module map
           urlMapping[url] = name;
 
-          var ngModule = ngr.parseNgModule(name, dependencies || []);
+          var ngModule = ngParse.parseNgModule(name, dependencies || []);
 
           var moduleDef = modules[name];
 
@@ -421,6 +425,7 @@
     };
 
     requirejs.tools.useLib('build', function(req) {
+
       internalLoad(req);
       // marks as loaded
       libraryLoaded = true;
@@ -440,10 +445,10 @@
 
   var exports = {
 
-    optimize: function(options, completeFn) {
+    optimize: function(options, completeFn, errorFn) {
 
       withLib(function(ngr) {
-        ngr.optimize(options, completeFn);
+        ngr.optimize(options, completeFn, errorFn);
       });
     },
 
@@ -456,7 +461,9 @@
   };
 
   if (typeof define === 'function') {
-    define('ngr', exports);
+    define('ngr', [], function() {
+      return exports;
+    });
   }
 
   if (env == 'browser') {

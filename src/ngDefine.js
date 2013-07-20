@@ -11,188 +11,102 @@
 
 (function(window) {
 
-  var ngDefine;
+  define([ 'angular', 'ngParse' ], function(angular, ngParse) {
 
-  var MODULE_DEPENDENCY = /^module:([^:]*)(:(.*))?$/;
-  var INTERNAL = /^ng/;
+    //////// utilities /////////
 
-  function isFunction(value){ return typeof value == 'function'; }
+    function toArray(arrayLike) {
+      return Array.prototype.slice.call(arrayLike, 0);
+    }
 
-  function isInternal(module) {
-    return INTERNAL.test(module);
-  }
 
-  function asFileDependency(module) {
-    return module.replace(/\./g, "/");
-  }
+    ///////// main /////////
+    
+    function internalModule(angular, name, dependencies, body) {
 
-  function toArray(arrayLike) {
-    return Array.prototype.slice.call(arrayLike, 0);
-  }
-
-  /**
-   * For each implementation as used by AngularJS
-   */
-  function forEach(obj, iterator, context) {
-    var key;
-    if (obj) {
-      if (isFunction(obj)){
-        for (key in obj) {
-          if (key != 'prototype' && key != 'length' && key != 'name' && obj.hasOwnProperty(key)) {
-            iterator.call(context, obj[key], key);
-          }
-        }
-      } else if (obj.forEach && obj.forEach !== forEach) {
-        obj.forEach(iterator, context);
-      } else if (isArrayLike(obj)) {
-        for (key = 0; key < obj.length; key++)
-          iterator.call(context, obj[key], key);
-      } else {
-        for (key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            iterator.call(context, obj[key], key);
-          }
-        }
+      if (!body) {
+        body = dependencies;
+        dependencies = null;
       }
-    }
-    return obj;
-  }
 
-  function parseNgModule(name, dependencies) {
+      var definition = ngParse.parseNgModule(name, dependencies || []);
 
-    var files = [], 
-        modules = [];
+      var module, exists;
 
-    forEach(dependencies, function(d) {
-      var moduleMatch = d.match(MODULE_DEPENDENCY);
-      if (moduleMatch) {
-        var module = moduleMatch[1],
-            path = moduleMatch[3];
+      var moduleDependencies = definition.moduleDependencies,
+          fileDependencies = definition.fileDependencies;
 
-        if (!path && !isInternal(module)) {
-          // infer path from module name
-          path = asFileDependency(module);
-        }
-
-        // add module dependency
-        modules.push(module);
-
-        if (path) {
-          // add path dependency if it exists
-          files.push(path);
-        }
-      } else {
-        files.push(d);
+      try {
+        angular.module(name);
+        exists = true;
+      } catch (e) {
+        exists = false;
       }
-    });
 
-    return { name: name, fileDependencies: files, moduleDependencies: modules };
-  }
+      if (moduleDependencies.length && exists) {
+        throw new Error(
+          "Cannot re-define angular module " + name + " with new dependencies [" + moduleDependencies + "]. " +
+          "Make sure the module is not defined else where or define a sub-module with additional angular module dependencies instead.");
+      }
 
-  function internalModule(angular, name, dependencies, body) {
+      if (moduleDependencies.length || !exists) {
+        module = angular.module(name, moduleDependencies);
+        debugLog(name, "defined with dependencies", moduleDependencies);
+      } else {
+        module = angular.module(name);
+        debugLog(name, "looked up");
+      }
 
-    if (!body) {
-      body = dependencies;
-      dependencies = null;
+      define(fileDependencies, function() {
+        var results = toArray(arguments);
+        results.unshift(module);
+
+        body.apply(window, results);
+
+        debugLog(name, "loaded");
+        return module;
+      });
     }
 
-    var definition = parseNgModule(name, dependencies || []);
 
-    var module, exists;
+    //////// module exports /////////
 
-    var moduleDependencies = definition.moduleDependencies,
-        fileDependencies = definition.fileDependencies;
-
-    try {
-      angular.module(name);
-      exists = true;
-    } catch (e) {
-      exists = false;
-    }
-
-    if (moduleDependencies.length && exists) {
-      throw new Error(
-        "Cannot re-define angular module " + name + " with new dependencies [" + moduleDependencies + "]. " +
-        "Make sure the module is not defined else where or define a sub-module with additional angular module dependencies instead.");
-    }
-
-    if (moduleDependencies.length || !exists) {
-      module = angular.module(name, moduleDependencies);
-      debugLog(name, "defined with dependencies", moduleDependencies);
-    } else {
-      module = angular.module(name);
-      debugLog(name, "looked up");
-    }
-
-    define(fileDependencies, function() {
-      var results = toArray(arguments);
-      results.unshift(module);
-
-      body.apply(window, results);
-
-      debugLog(name, "loaded");
-      return module;
-    });
-  }
-
-  /**
-   * Angular module definition / lookup
-   *
-   * @param  {string}             name of the module
-   * @param  {string}             (optional) dependencies of the module
-   * @param  {Function}           body function defining the module
-   */
-  function angularDefine(angular) {
-    var fn = function(name, dependencies, body) {
+    var exports = function(name, dependencies, body) {
       if (!dependencies) {
         throw new Error("wrong number of arguments, expected name[, dependencies], body");
       }
       internalModule(angular, name, dependencies, body);
     };
 
-    fn.parseNgModule = parseNgModule;
-
-    return fn;
-  }
-
-  var debugLog;
-
-  // for logging only
-  (function() {
-    var log;
-
-    // IE 9 logging #!?.
-    if (Function.prototype.bind && window.console && window.console.log) {
-      log = Function.prototype.bind.call(window.console.log, window.console);
+    if (typeof window !== undefined && !window.ngDefine) {
+      window.ngDefine = exports;
     }
 
-    debugLog = function() {
-      if (!ngDefine.debug || !log) {
-        return;
+
+    ///////// logging /////////
+
+    var debugLog = (function() {
+      var log;
+
+      // IE 9 logging #!?.
+      if (Function.prototype.bind && window.console && window.console.log) {
+        log = Function.prototype.bind.call(window.console.log, window.console);
       }
 
-      var args = toArray(arguments);
-      args.unshift("[ngDefine]");
+      return function() {
+        if (!exports.debug || !log) {
+          return;
+        }
 
-      log.apply(log, args);
-    };
-  })();
+        var args = toArray(arguments);
+        args.unshift("[ngDefine]");
 
-  define([ 'angular' ], function(angular) {
+        log.apply(log, args);
+      };
+    })();
 
-    ngDefine = ngDefine || angularDefine(angular);
 
-    if (!window.ngDefine) {
-      window.ngDefine = ngDefine;
-    }
-
-    // publish as requireJS module
-    return ngDefine;
+    ///////// export //////////
+    return exports;
   });
-
-  // publish statically in case we use the module outside
-  // a requirejs context (e.g. during testing)
-  if (window.angular) {
-    window.ngDefine = ngDefine = (ngDefine || angularDefine(window.angular));
-  }
 })(window);
