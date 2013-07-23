@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ngDefine by Nikku</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>ngDefine</h1>
+        <p>A friendly integration of AngularJS into RequireJS powered applications</p>
+
+        <p class="view"><a href="https://github.com/Nikku/requirejs-angular-define">View the Project on GitHub <small>Nikku/requirejs-angular-define</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Nikku/requirejs-angular-define/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Nikku/requirejs-angular-define/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Nikku/requirejs-angular-define">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>This project seamlessly integrates <a href="http://angularjs.org/">AngularJS</a> into <a href="http://requirejs.org/">RequireJS</a> based applications.</p>
+
+<h1>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h1>
+
+<p>Using <strong>ngDefine</strong> you can leverage <a href="http://requirejs.org/">RequireJS</a> to package <a href="http://angularjs.org/">AngularJS</a> modules into reusable components.</p>
+
+<div class="highlight"><pre><span class="nx">ngDefine</span><span class="p">(</span><span class="s1">'my.module'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="s1">'jquery'</span><span class="p">,</span>
+  <span class="s1">'./bar'</span><span class="p">,</span>
+  <span class="s1">'module:ngResource'</span><span class="p">,</span>
+  <span class="s1">'module:my.other.module:my-other-module'</span>
+<span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">module</span><span class="p">,</span> <span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// define the module</span>
+  <span class="nx">module</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<p><strong>ngDefine</strong> allows you to declare both plain RequireJS dependencies and AngularJS modules that get resolved using <a href="http://requirejs.org">RequireJS</a> before the module definition callback is called.</p>
+
+<p>It instantiates the AngularJS module with dependencies to other modules that may be <a href="#declare-angularjs-dependencies">declared</a> via <code>module:[moduleName]:[moduleLocation]</code>.</p>
+
+<p>The library supports <a href="#minification">minification</a> that reduces module definitions to plain AngularJS / RequireJS. </p>
+
+<h1>
+<a name="module-definition" class="anchor" href="#module-definition"><span class="octicon octicon-link"></span></a>Module Definition<a></a>
+</h1>
+
+<p>AngularJS modules are defined via the <strong>ngDefine</strong> function:</p>
+
+<div class="highlight"><pre><span class="nx">ngDefine</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">module</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// module =&gt; { .., name: 'app', .. }</span>
+  <span class="nx">module</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="ngdefine" class="anchor" href="#ngdefine"><span class="octicon octicon-link"></span></a>ngDefine</h3>
+
+<p>The function accepts a module name, an optional list of module dependencies and a module definition body. 
+The list of dependencies may contain AngularJS module dependencies in the form 
+<code>module:{angularModuleName}[:{requireJsPath}]</code>.</p>
+
+<p>The optional <code>requireJsPath</code> is used to map the AngularJS module to a RequireJS location. 
+If no path is given, the RequireJS path is produced by replacing all <code>.</code> with <code>/</code>. </p>
+
+<h3>
+<a name="full-example" class="anchor" href="#full-example"><span class="octicon octicon-link"></span></a>Full Example</h3>
+
+<div class="highlight"><pre><span class="nx">ngDefine</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="p">[</span>
+  <span class="c1">// require normal requireJS packages</span>
+  <span class="s1">'angular'</span><span class="p">,</span>
+  <span class="s1">'jquery'</span><span class="p">,</span>
+
+  <span class="c1">// require package local files</span>
+  <span class="s1">'./foo'</span><span class="p">,</span>
+
+  <span class="c1">// require angular modules</span>
+  <span class="s1">'module:ngResource:angular-resource'</span><span class="p">,</span>
+  <span class="s1">'module:my.module.bar:my-module/bar'</span><span class="p">,</span>
+  <span class="s1">'module:my.other.module:my-other-module'</span><span class="p">,</span>
+
+  <span class="c1">// require without a require js path -&gt; locates the module under</span>
+  <span class="c1">// foo/baz</span>
+  <span class="s1">'module:foo.baz'</span>
+<span class="p">],</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">module</span><span class="p">,</span> <span class="nx">angular</span><span class="p">,</span> <span class="nx">jquery</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// callback gets passed the defined module as the first</span>
+  <span class="c1">// parameter, all other objects defined by declared</span>
+  <span class="c1">// dependencies follow at parameters 1..n</span>
+
+  <span class="nx">module</span> <span class="c1">// --&gt; { .., name: 'app', .. }</span>
+
+  <span class="c1">// define module now</span>
+  <span class="nx">module</span><span class="p">.</span><span class="nx">value</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h1>
+<a name="project-configuration" class="anchor" href="#project-configuration"><span class="octicon octicon-link"></span></a>Project Configuration</h1>
+
+<p>A require configuration using <strong>ngDefine</strong> / AngularJS may look as follows:</p>
+
+<div class="highlight"><pre><span class="nx">require</span><span class="p">({</span>
+  <span class="nx">paths</span><span class="o">:</span> <span class="p">{</span>
+    <span class="c1">// include ngDefine script in path</span>
+    <span class="s1">'ngDefine'</span> <span class="o">:</span> <span class="s1">'lib/ngDefine'</span><span class="p">,</span> 
+    <span class="s1">'angular'</span> <span class="o">:</span> <span class="s1">'lib/angular/angular'</span><span class="p">,</span>
+
+    <span class="c1">// optional dependencies</span>
+    <span class="s1">'angular-resource'</span> <span class="o">:</span> <span class="s1">'lib/angular/angular-resource'</span>
+    <span class="s1">'jquery'</span> <span class="o">:</span> <span class="s1">'lib/jquery/jquery'</span>
+  <span class="p">},</span>
+  <span class="nx">shim</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">'angular'</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">deps</span><span class="o">:</span> <span class="p">[</span> <span class="s1">'jquery'</span> <span class="p">],</span> <span class="nx">exports</span><span class="o">:</span> <span class="s1">'angular'</span> <span class="p">},</span>
+    <span class="s1">'angular-resource'</span><span class="o">:</span> <span class="p">{</span> <span class="nx">deps</span><span class="o">:</span> <span class="p">[</span> <span class="s1">'angular'</span> <span class="p">]</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">packages</span><span class="o">:</span> <span class="p">[</span>
+    <span class="c1">// application package</span>
+    <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'app'</span><span class="p">,</span> <span class="nx">location</span><span class="o">:</span> <span class="s1">'app'</span> <span class="p">},</span>
+
+    <span class="c1">// other angular modules</span>
+    <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'my-module'</span><span class="p">,</span> <span class="nx">location</span><span class="o">:</span> <span class="s1">'lib/my-module'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">'my-other-module'</span><span class="p">,</span> <span class="nx">location</span><span class="o">:</span> <span class="s1">'lib/my-other-module'</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>The following piece of code may then be used to bootstrap the application:</p>
+
+<div class="highlight"><pre><span class="c1">// require ngDefine and all angular modules your app requires</span>
+<span class="nx">require</span><span class="p">([</span> <span class="s1">'ngDefine'</span><span class="p">,</span> <span class="s1">'angular'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ngDefine</span><span class="p">,</span> <span class="nx">angular</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// require the application</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="c1">// bootstrap the application</span>
+    <span class="nx">angular</span><span class="p">.</span><span class="nx">bootstrap</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="p">[</span><span class="s1">'app'</span><span class="p">]);</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>It ensures that <strong>ngDefine</strong> is loaded before the application modules are defined.
+Additionally it <a href="http://docs.angularjs.org/api/angular.bootstrap">bootstraps the AngularJS application</a> after the application and its dependencies have been resolved.</p>
+
+<h1>
+<a name="minification" class="anchor" href="#minification"><span class="octicon octicon-link"></span></a>Minification<a></a>
+</h1>
+
+<p>The library provides the script <strong>ngr.js</strong> that can be used to minify modules created using <strong>ngDefine</strong>. 
+<strong>ngr.js</strong> is a wrapper to the <a href="http://requirejs.org/docs/optimization.html%20optimizer">RequireJS</a> and works in NodeJS and browser environments. </p>
+
+<p>To expose the script as the <strong>ngr</strong> task into <a href="http://gruntjs.com/">grunt</a>, use the following code snippet: </p>
+
+<div class="highlight"><pre><span class="c1">// project configuration</span>
+<span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
+  <span class="c1">// ...</span>
+
+  <span class="nx">ngr</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">minify</span><span class="o">:</span> <span class="p">{</span>
+      <span class="c1">// supports all options r.js understands</span>
+      <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">name</span> <span class="o">:</span> <span class="s1">'app/main'</span><span class="p">,</span>
+        <span class="nx">out</span><span class="o">:</span> <span class="s1">'build/app.min.js'</span>
+
+        <span class="c1">// path, shim and package configurations </span>
+        <span class="c1">// ...</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// sample task for ngDefine optimization</span>
+<span class="nx">grunt</span><span class="p">.</span><span class="nx">registerMultiTask</span><span class="p">(</span><span class="s1">'ngr'</span><span class="p">,</span> <span class="s1">'Minify app'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="kd">var</span> <span class="nx">done</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">async</span><span class="p">();</span>
+
+  <span class="kd">var</span> <span class="nx">ngr</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'path/to/ngr.js'</span><span class="p">);</span>
+
+  <span class="nx">ngr</span><span class="p">.</span><span class="nx">optimize</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">options</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">done</span><span class="p">(</span><span class="s1">'success'</span><span class="p">);</span>
+  <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Error during minify: '</span><span class="p">,</span> <span class="nx">e</span><span class="p">);</span>
+    <span class="nx">done</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">'With failures: '</span> <span class="o">+</span> <span class="nx">e</span><span class="p">));</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<h1>
+<a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ</h1>
+
+<h4>
+<a name="why-should-i-use-requirejs-after-all-angularjs-includes-a-dependency-injection-mechanism-doesnt-it" class="anchor" href="#why-should-i-use-requirejs-after-all-angularjs-includes-a-dependency-injection-mechanism-doesnt-it"><span class="octicon octicon-link"></span></a>Why should I use RequireJS? After all, AngularJS includes a dependency injection mechanism, doesn't it?<a></a>
+</h4>
+
+<p>AngularJS offers a dependency injection mechanism at runtime. 
+When building applications a developer must know which script files to include into his application so that all runtime dependencies are met when the application is bootstrapped. 
+AngularJS does not allow application developers to define these dependencies on the file level. 
+However, that is exactly what RequireJS does. </p>
+
+<p><strong>ngDefine</strong> simply employs RequireJS and gives developers the ability to declare AngularJS modules and their dependencies in a portable way. 
+This way the modules can be reused and external dependencies can easily be resolved.</p>
+
+<h4>
+<a name="ngdefine-bridges-the-gap-between-requirejs-and-angularjs" class="anchor" href="#ngdefine-bridges-the-gap-between-requirejs-and-angularjs"><span class="octicon octicon-link"></span></a>ngDefine bridges the gap between RequireJS and AngularJS?</h4>
+
+<p>Not quite, <a href="#why-should-i-use">read again</a>. There is no gap between RequireJS and AngularJS, as both serve different purposes during different stages of the application lifecycle. 
+<strong>ngDefine</strong> allows you to leverage the power of both technologies. </p>
+
+<h4>
+<a name="can-an-application-that-uses-ngdefine-be-minified" class="anchor" href="#can-an-application-that-uses-ngdefine-be-minified"><span class="octicon octicon-link"></span></a>Can an application that uses ngDefine be minified?</h4>
+
+<p>Yes, <a href="#minification">minification can be done</a>.</p>
+
+<h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
+
+<p>Use under terms of MIT license.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Nikku">Nikku</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
