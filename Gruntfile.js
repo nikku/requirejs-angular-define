@@ -21,6 +21,17 @@ module.exports = function(grunt) {
           baseUrl: './src',
           out: 'build/ngr.js'
         }
+      },
+      bower: {
+        options: {
+          name : 'ngDefine',
+          optimize: 'none',
+          baseUrl: './src',
+          paths: {
+            'angular': 'empty:'
+          },
+          out: 'dist/ngDefine.js'
+        }
       }
     },
 
@@ -39,7 +50,7 @@ module.exports = function(grunt) {
             'angular' : 'lib/angular/angular',
             'angular-resource' : 'lib/angular/angular-resource'
           },
-          optimize: "uglify2", 
+          optimize: 'uglify2',
           shim: {
             'angular' : { deps: [ 'jquery' ], exports: 'angular' },
             'angular-resource': { deps: [ 'angular' ] },
@@ -75,7 +86,7 @@ module.exports = function(grunt) {
       }
     }
   });
-  
+
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
 
