@@ -141,7 +141,7 @@ If no path is given, the RequireJS path is produced by replacing all <code>.</co
 <span class="nx">require</span><span class="p">([</span> <span class="s1">'ngDefine'</span><span class="p">,</span> <span class="s1">'angular'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ngDefine</span><span class="p">,</span> <span class="nx">angular</span><span class="p">)</span> <span class="p">{</span>
 
   <span class="c1">// require the application</span>
-  <span class="nx">require</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">require</span><span class="p">([</span><span class="s1">'app'</span><span class="p">],</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// bootstrap the application</span>
     <span class="nx">angular</span><span class="p">.</span><span class="nx">bootstrap</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">,</span> <span class="p">[</span><span class="s1">'app'</span><span class="p">]);</span>
