@@ -1,6 +1,6 @@
 # ngDefine
 
-[![Build Status](https://travis-ci.org/Nikku/requirejs-angular-define.png?branch=master)](https://travis-ci.org/Nikku/requirejs-angular-define)
+[![Build Status](https://travis-ci.com/nikku/requirejs-angular-define.png?branch=master)](https://travis-ci.com/nikku/requirejs-angular-define)
 
 This project seamlessly integrates [AngularJS](http://angularjs.org/) into [RequireJS](http://requirejs.org/) based applications.
 
